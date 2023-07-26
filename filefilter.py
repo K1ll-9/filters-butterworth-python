@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-ORDER=4
+ORDER=6
 FC=82*2*1.25
 FILE="guitar_E.wav"
 
@@ -36,6 +36,7 @@ print("read "+str(len(signal))+" frames")
 print("in the range "+str(min(signal))+" to "+str(max(signal)))
 print("Frame rate:"+ str(FR))
 print("# frames :"+ str(N))
+print("Params :"+ str(wavfile.getparams()))
 
 
 # Print dfft spectrum
@@ -53,7 +54,7 @@ fig2, axs2 = plt.subplots(3, 1, figsize=(7, 15))
 sos = butter(ORDER, Wn=FC, btype='lowpass', analog=False, fs=FR, output='sos')
 filtered = sosfilt(sos, signal)
 axs2[0].plot(t, filtered, label='Filtered signal', color='C3')
-axs2[0].set_title("Filtered signal waveform")
+axs2[0].set_title("Filtered signal waveform fc:"+ str(FC) +" Hz")
 axs2[0].grid(color='grey', linewidth=1, linestyle='--',)
 
 # Print dfft spectrum of butter_filtered signal
@@ -65,10 +66,12 @@ axs2[1].axis([0, 2000, 0, 17000])
 axs2[1].set_title("Filtered signal spectrum (lowpass butter "+ str(ORDER) +"th order - fc:"+str(FC)+"Hz")
 
 # Print butter filtered signal
-for FC in [100, 150, 200]:
+for FC in [100, 150, 205]:
   b, a = butter(N=ORDER, Wn=FC, btype='lowpass', analog=False, output='ba', fs=FR)
   w, h = freqz(b=b, a=a, fs=FR, worN=512)
   axs2[2].plot(w, abs(h), label="FC = %d" % FC)
+  print("FC: "+ str(FC)+" a: "+ str(a))
+  print("FC: "+ str(FC)+" b: "+ str(b))
 
 axs2[2].axis([0, 2000, 0, 1])
 axs2[2].grid(color='grey', linewidth=1, linestyle='--',)
